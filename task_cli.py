@@ -1,17 +1,12 @@
 import sys 
 
-app_name = sys.argv[0]
-first_argument = sys.argv[1]
-second_argument = sys.argv[2]
+from src.CLI import CLI
+from src.DataBase.JsonDataBase import JsonDataBase
 
-def handle_add():
-	print("add requested...")
+saveFilePath = 'tasks.json'
+database = JsonDataBase(saveFilePath)
 
+cli = CLI(database)
 
-match first_argument:
-	case "add":
-		handle_add()
+cli.handle(sys.argv[1:])
 
-
-print('Primer argumento:' + first_argument)
-print('Segundo argumento:' + second_argument)
