@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from .. import Task
+from ..Task import Task
 
 class IDataBase(ABC):
     """Interfaz para guardar y cargar datos de tareas."""
@@ -11,6 +11,6 @@ class IDataBase(ABC):
         pass
 
     @abstractmethod
-    def load(self) -> List['Task']:
+    def loadData(self) -> List['Task']:
         """Carga la lista de tareas desde un archivo."""
         pass
