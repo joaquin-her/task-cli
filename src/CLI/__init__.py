@@ -1,5 +1,4 @@
 from typing import List
-from .. import Task
 from ..DataBase.IDataBase import IDataBase
 
 class CLI(object):
@@ -9,17 +8,21 @@ class CLI(object):
     
     """ handles the console args. Args must be a list of Strings """
     def handle(self, args: List[str]):
-        print(len(args))
-        print(args)
         if len(args) >= 2: 
-            command = args[1]
+            command = args[0]
+            description = str(args[1])
             match command:
                 case 'add':
-                    print("add requested for "+ args[2])
-                    # self.add_task(args[1])
+                    self.addTask(description)
+        if args[0] == 'list':
+            self.listTasks(args[1:])
 
     # """ appends a task to the database"""
-    # def add_task(self, task_description:str): 
-    #     newTask = Task(id=self.database.getLastId(), description=task_description )
-    #     self.database.add(newTask)
+    def addTask(self, task_description:str): 
+        self.database.add(task_description)
 
+    def listTasks(self, args):
+        if len(args) == 0:
+            items = self.database.getLast(10)
+            for item in items:
+                print(item)
