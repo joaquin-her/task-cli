@@ -1,0 +1,47 @@
+@startuml
+
+class CLI {
+- database: IDataBase 
++ CLI(database: IDataBase
++ handle(command: List[str])
+}
+
+interface IDataBase {
+{abstract} + add(task_description: str)
+{abstract} + getLast(limit:int) : List[Dict]
+}
+
+class JsonDataBase implements IDataBase{
+- URI: str
+- data: Dict
++ add(task_description: str)
++ getLast(limit:int): List[Dict]
+- loadData(URI): Dict
+- createData(URI): Dict
+- saveData(URI)
+- getLastID():int
+}
+
+' class SqlLite3 implements IDataBase{
+
+' }
+
+' class MyORM implements IDataBase{
+
+' }
+' MyORM o-- PostgreSQL
+
+class Task{
+- id: int
+- description: str
+- status: str
+- created: Date
+- updated: Date
++ Task(id: int, description:str)
++ to_dict() : Dict
+}
+
+CLI o-- IDataBase
+
+IDataBase .> Task
+@enduml
