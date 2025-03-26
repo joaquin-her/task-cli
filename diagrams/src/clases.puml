@@ -1,25 +1,41 @@
-@startuml
+@startuml clases
 
-class CLI {
-- database: IDataBase 
-+ CLI(database: IDataBase
-+ handle(command: List[str])
+interface ICLI {
+{abstract} + handle(command: List[str])
+}
+
+class CLI implements ICLI {
++ CLI(database: IDataBase)
+- addTask(description:str)
+- updateStatus(id:id, value:str)
+- updateDescription(id:id, value:str)
+- remove(id:int)
+- list()
+- filterByStatus(value:str)
+- getHead()
+- getTail()
 }
 
 interface IDataBase {
 {abstract} + add(task_description: str)
-{abstract} + getLast(limit:int) : List[Dict]
+{abstract} + updateStatus(id:int, status:str)
+{abstract} + updateDescription(id:int, description:str)
+{abstract} + removeItem(id:int)
+{abstract} + getItems(): list[IItem]
+{abstract} + filter(field:str, value:str): List[IItem]
+{abstract} + getHead(): List[IItem]
+{abstract} + getTail(): List[IItem]
 }
 
 class JsonDataBase implements IDataBase{
 - URI: str
 - data: Dict
-+ add(task_description: str)
-+ getLast(limit:int): List[Dict]
+
 - loadData(URI): Dict
 - createData(URI): Dict
 - saveData(URI)
 - getLastID():int
+
 }
 
 ' class SqlLite3 implements IDataBase{
@@ -31,17 +47,23 @@ class JsonDataBase implements IDataBase{
 ' }
 ' MyORM o-- PostgreSQL
 
-class Task{
-- id: int
+interface IItem {
 - description: str
 - status: str
 - created: Date
 - updated: Date
+{abstract} + to_dict() : Dict
+{abstract} + setStatus(status:str)
+}
+
+class Task implements IItem{
+- id: int
 + Task(id: int, description:str)
-+ to_dict() : Dict
 }
 
 CLI o-- IDataBase
+IDataBase -> IItem
 
-IDataBase .> Task
+JsonDataBase .> Task
+
 @enduml
