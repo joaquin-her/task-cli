@@ -164,6 +164,7 @@ def test_13_se_puede_filtrar_las_tareas_por_status_to_do(tmp_path):
 def test_14_se_puede_filtrar_las_tareas_por_status_in_progress(tmp_path):
 	"""Se evalua que se obtengan correctamente las tareas en 'in-progress de la db"""
 	assert False
+	
 def crearDBVacia(tmp_path):
 	temp_dir = tmp_path / "tests_folder"
 	temp_dir.mkdir()
