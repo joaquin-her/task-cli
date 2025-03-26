@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 
 class Task(object):
@@ -7,8 +7,8 @@ class Task(object):
 		self.id = id 
 		self.description = description
 		self.status = 'to-do'
-		self.created = date.today()
-		self.updated = date.today()
+		self.created = datetime.now()
+		self.updated = datetime.now()
 
 	def to_dict(self)-> dict : 
 		dict = {
