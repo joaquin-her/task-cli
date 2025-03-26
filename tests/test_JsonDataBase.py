@@ -164,7 +164,35 @@ def test_13_se_puede_filtrar_las_tareas_por_status_to_do(tmp_path):
 def test_14_se_puede_filtrar_las_tareas_por_status_in_progress(tmp_path):
 	"""Se evalua que se obtengan correctamente las tareas en 'in-progress de la db"""
 	assert False
-	
+
+def test_15_modificar_un_elemento_que_no_existe_arroja_ina_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar modificar un elemento que no existe"""
+	assert False
+
+def test_16_filtrar_por_un_valorInvalido_arroja_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un status que no existe"""
+	assert False
+
+def test_17_filtrar_por_un_campoInvalido_arroja_una_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un campo que no sea 'status' """
+	assert False
+
+def test_18_eliminar_un_elemento_que_no_existe_arroja_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
+	assert False
+
+def test_19_se_puede_modificar_una_decripcion_correctamente(tmp_path):
+	"""Se evalua que la modificacion de el campo descripcion se modifica correctamente"""
+	assert False
+
+def test_20_getHead_devuelve_los_primeros_10(tmp_path):
+	"""Se valida que si hay mas de 10 elementos, hacer getHead solo devuelve los primeros 10 elementos que fueron agregados"""
+	assert False
+
+def test_21_getTail_devuelve_los_ultimos_10(tmp_path):
+	"""Se valida que si hay mas de 10 elementos, hacer getTail solo devuelve los ultimos 10 elementos que fueron agregados"""
+	assert False
+
 def crearDBVacia(tmp_path):
 	temp_dir = tmp_path / "tests_folder"
 	temp_dir.mkdir()
