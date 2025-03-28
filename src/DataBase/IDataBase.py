@@ -14,3 +14,8 @@ class IDataBase(ABC):
     def getLast(self, limit:int) -> List[dict]:
         """Devuelve una lista de tareas en los ultimos lugares. La cantidad a devolver es pasada por el atrributo 'limit'."""
         pass
+
+    @abstractmethod
+    def updateStatus(self, index:int, task_description: str):
+        """Modifica el status de la tarea."""
+        pass
