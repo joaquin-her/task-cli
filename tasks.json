@@ -1,0 +1,29 @@
+{
+    "tasks": {
+        "0": {
+            "description": "Pasar tests",
+            "status": "to-do",
+            "created": "2025-03-28T09:42:53.208252",
+            "updated": "2025-03-28T09:42:53.208252"
+        },
+        "1": {
+            "description": "Lavar ropa",
+            "status": "to-do",
+            "created": "2025-03-28T16:35:31.105527",
+            "updated": "2025-03-28T16:35:31.105527"
+        },
+        "2": {
+            "description": "Hacer la cama",
+            "status": "to-do",
+            "created": "2025-03-28T16:35:45.077109",
+            "updated": "2025-03-28T16:35:45.077109"
+        },
+        "3": {
+            "description": "Retirar efectivo de ATM",
+            "status": "to-do",
+            "created": "2025-03-28T16:36:45.874109",
+            "updated": "2025-03-28T16:36:45.874109"
+        }
+    },
+    "items": 4
+}
