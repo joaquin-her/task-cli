@@ -1,4 +1,4 @@
-from src.DataBase.JsonDataBase import JsonDataBase
+from src.DataBase import JsonDataBase, UnknownIndexException
 from datetime import datetime
 import os
 import json
@@ -147,12 +147,40 @@ def test_09_eliminar_de_archivo_destino(tmp_path):
 
 def test_10_elminar_un_elemento_no_resta_a_la_cantidad_de_ids(tmp_path):
 	"""Se evalua que eliminar elementos no disminuya la cantidad de ids del contador del db"""
-	assert False
+
+	temp_dir = tmp_path / "tests_folder"
+	temp_dir.mkdir()
+	ubicacion_designada = temp_dir / 'test_data.json'
+	with open(ubicacion_designada, "w")as file:
+		json_con_elementos = {"tasks":[{
+			"id": 0,
+			"description": "Practicar programacion",
+			"status": "to-do",
+			"created": "2025-03-26",
+			"updated": "2025-03-26"
+		},{
+			"id": 1,
+			"description": "Estudiar algebra lineal",
+			"status": "to-do",
+			"created": "2025-03-26",
+			"updated": "2025-03-26"
+		}],"items":2}
+		json.dump(json_con_elementos, file)
+	db = JsonDataBase(str(ubicacion_designada))
+	db.removeItem(0)
+
+	with open(ubicacion_designada, "r" ) as file:
+		json_obtenido = json.load(file)
+		
+	assert json_obtenido["items"] == 2
 
 def test_11_pedir_un_elemento_que_no_existe_arroja_una_excepcion(tmp_path):
 	"""Se evalua que si se intenta obtener un elemento que no esta dentro de la informacion cargada o aniadida, una excepcion es lanzada"""
-	assert False
-
+	db = crearDBVacia(tmp_path)
+	with pytest.raises(UnknownIndexException) as excinfo:
+		db.removeItem(2)
+	assert str(excinfo.value) == "El indice ingresado no es valido"
+	
 def test_12_se_puede_filtrar_las_tareas_por_status_done(tmp_path):
 	"""Se evalua que se obtengan correctamente las tareas ya completadas de la db"""
 	assert False
