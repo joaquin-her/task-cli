@@ -1,24 +1,16 @@
 
-VENV = task-cli-venv
+VENV = venv
 PYTHON = $(VENV)/bin/python3
 PIP = $(VENV)/bin/pip
+PYTEST = $(VENV)/bin/pytest
+run: $(VENV)/bin/activate
+	$(PYTHON) app.py
 
-
-venv: requirements.txt
-	python3 -m venv $(VENV)
+setup: requirements.txt
 	$(PIP) install -r requirements.txt
 
-docker_build:
-        docker build -t task-cli-linux .
-
-docker_up:
-        docker_build
-        docker run -it \
-                -v $(PWD)/src:/task-cli/src \
-                -v $(PWD)/tests:/task-cli/tests \
-                -v $(PWD)/task-cli.py:/task-cli/task-cli.py \
-                -v $(PWD)/makefile:/task-cli/makefile \
-                task-cli-linux
+test: 
+	$(PYTEST) tests -v
 
 clean:
 	rm -rf __pycache__
