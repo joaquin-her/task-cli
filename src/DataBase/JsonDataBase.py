@@ -1,6 +1,6 @@
 from .IDataBase import IDataBase
-from ..Task import Task
-from .DataBaseExceptions import UnknownIndexException
+from ..Task import Task, UnknownFieldException, UnknownStatusException
+from .DataBaseExceptions import UnknownIndexException, ModificationError
 import json
 
 class JsonDataBase(IDataBase):
@@ -21,7 +21,6 @@ class JsonDataBase(IDataBase):
 
     def createData(self, URI):
         """Crea el archivo vacio para guardar tareas si en la ruta no hay ningun elemento"""
-
         with open(URI, "w") as file:
             data = {"tasks": {}, "items":0}
             json.dump(data, file )
@@ -57,7 +56,7 @@ class JsonDataBase(IDataBase):
 
     def getLast(self, limit):
         """Devuelve los ultimos 'limit' elementos de la base de datos"""
-        tasks = self.data["tasks"]
+        tasks = self.data["tasks"].values()
         if len(tasks) >= limit:
             return tasks[-limit:]  
         else:
@@ -71,14 +70,18 @@ class JsonDataBase(IDataBase):
         self.saveData()
         return
 
-    def updateStatus(self, index:int, status:str):
+    def update(self, index:int, field:str, value:str):
         """Se convierte el indice del diccionario a Objeto, se modifica, y se guarda su modificado"""
         if (self.exists(index)):
             requestedTask = self.getItem(index)
             updatedTask = Task.fromDict(requestedTask)
-            updatedTask.setStatus(status)
-            self.saveTask(index, updatedTask)
-            self.saveData()
+            try:
+                updatedTask.update(field, value)
+                self.saveTask(index, updatedTask)
+                self.saveData()
+            except (UnknownStatusException, UnknownFieldException, TypeError) :
+                raise ModificationError
+
 
     def saveTask(self, index:int, task:Task):
         self.data["tasks"][str(index)] = task.to_dict()
