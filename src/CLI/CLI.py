@@ -46,8 +46,7 @@ class CLI(object):
         print(task_description + ": aniadida correctamente")
         
     """ lists the last 10 tasks in the database"""
-    def listTasks(self, args):
-        if len(args) == 0:
-            items = self.database.getLast(10)
-            for item in items:
-                print(Task.fromDict(item))
+    def listTasks(self, amount):
+        items = self.database.getLast(int(amount))
+        for item in items:
+            print(Task.fromDict(item))
