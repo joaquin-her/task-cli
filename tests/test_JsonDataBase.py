@@ -1,4 +1,4 @@
-from src.DataBase import JsonDataBase, UnknownIndexException
+from src.DataBase import JsonDataBase, UnknownIndexException, ModificationError
 from datetime import datetime
 import os
 import json
@@ -72,48 +72,6 @@ def test_05_la_cantidad_de_items_incrementa_al_aniadir_elementos(tmp_path):
 	cantidad_obtenida = db.getLastId()
 	assert cantidad_esperada == cantidad_obtenida
 
-def test_06_se_puede_modificar_el_estado_de_una_tarea(tmp_path):
-	"""Se evalua que se pueda modificar el campo 'status' de las tareas """
-	db = crearDBVacia(tmp_path)
-	db.add("Leer 1 capitulo de Algebra Lineal")
-	db.updateStatus(0, "done")
-	item_modificado = db.getItem(0)
-
-	assert item_modificado["status"] == "done"
-
-def test_07_al_modificar_se_actualiza_el_campo_updated(tmp_path, ):
-	"""Se evalua que se actualice el timestamp de cuando fue modificado por ultima vez la tarea"""
-	temp_dir = tmp_path / "tests_folder"
-	temp_dir.mkdir()
-	ubicacion_designada = temp_dir / 'test_data.json'
-	with open(ubicacion_designada, "w")as file:
-		json_con_elementos = {"tasks":{ 
-		"0":
-			{"description": "Practicar programacion",
-			"status": "to-do",
-			"created": "1990-03-28T09:42:53.208252",
-			"updated": "1990-03-28T09:42:53.208252"},
-		"1":
-			{"description": "Estudiar algebra lineal",
-			"status": "to-do",
-			"created": "1990-03-28T09:42:53.208252",
-			"updated": "1990-03-28T09:42:53.208252"}
-		},"items":2}
-		json.dump(json_con_elementos, file)
-	db = JsonDataBase(str(ubicacion_designada))
-
-	db.updateStatus(0, "done")
-	updated_time_esperado = datetime.now()
-	item_modificado = db.getItem(0)
-	
-
-	assert item_modificado["description"] == "Practicar programacion"
-	assert item_modificado["status"] == "done"
-	assert item_modificado["created"] != item_modificado["updated"]
-	tiempo_obtenido = datetime.fromisoformat(item_modificado["updated"])
-
-	diferencia_segundos = abs((tiempo_obtenido - updated_time_esperado).total_seconds())
-	assert  diferencia_segundos == pytest.approx(0, abs=1)
 
 def test_08_se_puede_eliminar_un_item(tmp_path):
 	"""Se evalua que los elementos puedan ser eliminados correctamente"""
@@ -224,9 +182,74 @@ def test_11_pedir_un_elemento_que_no_existe_arroja_una_excepcion(tmp_path):
 # 	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
 # 	assert False
 
-# def test_19_se_puede_modificar_una_decripcion_correctamente(tmp_path):
-# 	"""Se evalua que la modificacion de el campo descripcion se modifica correctamente"""
-# 	assert False
+def test_06_se_puede_modificar_el_estado_de_una_tarea(tmp_path):
+	"""Se evalua que se pueda modificar el campo 'status' de las tareas """
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	db.update(0, "status", "done")
+	item_modificado = db.getItem(0)
+
+	assert item_modificado["status"] == "done"
+
+def test_07_al_modificar_se_actualiza_el_campo_updated(tmp_path, ):
+	"""Se evalua que se actualice el timestamp de cuando fue modificado por ultima vez la tarea"""
+	temp_dir = tmp_path / "tests_folder"
+	temp_dir.mkdir()
+	ubicacion_designada = temp_dir / 'test_data.json'
+	with open(ubicacion_designada, "w")as file:
+		json_con_elementos = {"tasks":{ 
+		"0":
+			{"description": "Practicar programacion",
+			"status": "to-do",
+			"created": "1990-03-28T09:42:53.208252",
+			"updated": "1990-03-28T09:42:53.208252"},
+		"1":
+			{"description": "Estudiar algebra lineal",
+			"status": "to-do",
+			"created": "1990-03-28T09:42:53.208252",
+			"updated": "1990-03-28T09:42:53.208252"}
+		},"items":2}
+		json.dump(json_con_elementos, file)
+	db = JsonDataBase(str(ubicacion_designada))
+
+	db.update(0,"status", "done")
+	updated_time_esperado = datetime.now()
+	item_modificado = db.getItem(0)
+	
+
+	assert item_modificado["description"] == "Practicar programacion"
+	assert item_modificado["status"] == "done"
+	assert item_modificado["created"] != item_modificado["updated"]
+	tiempo_obtenido = datetime.fromisoformat(item_modificado["updated"])
+
+	diferencia_segundos = abs((tiempo_obtenido - updated_time_esperado).total_seconds())
+	assert  diferencia_segundos == pytest.approx(0, abs=1)
+	
+def test_19_se_puede_modificar_una_decripcion_correctamente(tmp_path):
+	"""Se evalua que la modificacion de el campo descripcion se modifica correctamente"""
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	descripcion_esperada = "Leer 2 capitulos de Algebra Lineal"
+	db.update(0,"description", descripcion_esperada)
+	updated_task = db.getItem(0)
+	assert updated_task["description"] == "Leer 2 capitulos de Algebra Lineal"
+
+def test_23_modificar_un_campo_invalido_arroja_una_excepcion(tmp_path):
+	"""Se evalua que la modificacion de un campo desconocido arroje una excepcion"""
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	
+	with pytest.raises(ModificationError) :
+		db.update(0, "owner", "Leer 2 capitulos de Algebra Lineal")
+
+def test_24_modificar_un_campo_con_un_valor_invalido_arroja_una_excepcion(tmp_path):
+	"""Se evalua que la modificacion de un campo valido con un valor invalido arroje una excepcion"""
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+
+	with pytest.raises(ModificationError) :
+		db.update(0, "description", 2)
+
 
 # def test_20_getHead_devuelve_los_primeros_10(tmp_path):
 # 	"""Se valida que si hay mas de 10 elementos, hacer getHead solo devuelve los primeros 10 elementos que fueron agregados"""
