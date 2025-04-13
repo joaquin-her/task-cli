@@ -20,7 +20,7 @@ Use the native file system module of your programming language to interact with 
 Do not use any external libraries or frameworks to build this project.
 Ensure to handle errors and edge cases gracefully.
 
-## Ecample 
+## Example 
 
 ```
 # Adding a new task
@@ -43,6 +43,3 @@ task-cli list done
 task-cli list todo
 task-cli list in-progress
 ```
-
-## Deadline
-1-2 Days

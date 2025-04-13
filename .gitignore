@@ -1,0 +1,8 @@
+venv/
+Scripts 
+.pytest_cache
+Lib
+Include 
+*.cfg
+*.pyc
+.coverage
