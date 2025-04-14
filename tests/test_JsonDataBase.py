@@ -12,7 +12,6 @@ def test_01_se_crea_un_json_si_no_lo_hay_en_la_ubicacion_designada(tmp_path):
 	"""Se define una ruta para almacenar la informacion, si la ruta esta vacia se crea un archivo alli"""
 
 	temp_dir = tmp_path / "tests_folder"
-	temp_dir.mkdir()
 	ubicacion_designada = temp_dir / 'test_data.json'
 
 	assert os.path.exists(ubicacion_designada) == False
