@@ -50,17 +50,22 @@ class JsonDataBase(IDataBase):
         """Devuelve el valor del ultimo Id de sus tareas"""
         return self.data["items"]
     
-    def getItems(self)-> dict:
-        """Devuelve el listado de objetos almacenados"""
-        return self.data["tasks"]
+    def getItems(self) -> dict:
+        """Devuelve el listado de objetos almacenados con sus claves como 'id'."""
+        tasks = {}
+        for key, value in self.data["tasks"].items():
+            task_copy = value.copy()
+            task_copy["id"] = key
+            tasks[key] = task_copy
+        return tasks
 
     def getLast(self, limit):
-        """Devuelve los ultimos 'limit' elementos de la base de datos"""
-        tasks = self.data["tasks"].values()
-        if len(tasks) >= limit:
-            return tasks[-limit:]  
-        else:
-            return tasks  
+        """Devuelve los últimos 'limit' elementos de la base de datos con sus claves como 'id'."""
+        items = list(self.data["tasks"].items())
+        last_items = items[-limit:] if len(items) >= limit else items
+        return [
+            {"id": id, **task} for id, task in last_items
+        ]
     
     def removeItem(self, index):
         """Se elimina el objeto en el indice de la Clase y de su persistencia"""
