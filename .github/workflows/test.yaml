@@ -19,19 +19,13 @@ jobs:
         with:
           python-version: '3.x' # Usa la versión más reciente de Python 3
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt 
-
       - name: Build Docker image
-        run: docker build -t task-cli-test-image . # Construye la imagen Docker para pruebas
+        run: docker build -t task-cli-test-image docker/tests/ # Construye la imagen Docker para pruebas
 
       - name: Run Docker container and execute tests
-        run: docker run task-cli-test-image python pytest tests/ # Asume que tus pruebas están en el directorio 'tests/' y usas pytest
+        run: docker run task-cli-test-image scripts/run_tests.sh 
 
       - name: Run Coverage
         run: |
-          docker run task-cli-test-image coverage run -m pytest tests/ 
+          docker run task-cli-test-image scripts/run_coverage.sh
           docker run task-cli-test-image coverage report 
-          
