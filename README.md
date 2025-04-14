@@ -1,5 +1,6 @@
-# A project proposed in "Roadmap.sh"
-link: https://roadmap.sh/projects/task-tracker
+## Project source
+
+This is a project from [Roadmap](https://www.roadmap.sh). Click this [link](https://roadmap.sh/projects/task-tracker) to checkout the project
 
 ## App description
 Task tracker is a project used to track and manage your tasks. In this task, you will build a simple command line interface (CLI) to track what you need to do, what you have done, and what you are currently working on. This project will help you practice your programming skills, including working with the filesystem, handling user inputs, and building a simple CLI application.
