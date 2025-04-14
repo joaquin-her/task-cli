@@ -12,7 +12,10 @@ COPY cli_wrapper.sh /task-cli/
 # Instala las dependencias del proyecto
 RUN pip install -r requirements.txt
 
+
 # Crea un enlace simbólico para que 'task-cli' apunte a tu script
 RUN ln -s /task-cli/cli_wrapper.sh /usr/local/bin/task-cli
+# Hacer ejecutable el wrapper
+RUN chmod +x /task-cli/cli_wrapper.sh
 CMD ["/bin/sh"]
 
