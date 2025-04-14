@@ -171,25 +171,54 @@ def test_12_se_puede_filtrar_las_tareas_por_status_done(tmp_path):
 	assert items_obtenidos["1"]["description"] == "Hacer un proyecto con python"
 	assert items_obtenidos["2"]["description"] == "Ejecutar pruebas unitarias"
 
-# def test_13_se_puede_filtrar_las_tareas_por_status_to_do(tmp_path):
-# 	"""Se evalua que se obtengan correctamente las tareas en 'to-do de la db"""
-# 	assert False
+def test_13_se_puede_filtrar_las_tareas_por_status_to_do(tmp_path):
+	"""Se evalua que se obtengan correctamente las tareas en 'to-do de la db"""
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	db.add("Hacer un proyecto con python")
+	db.add("Ejecutar pruebas unitarias")
+	db.add("Hacer pruebas sobre CLI")
+	db.add("Hacer pruebas sobre DB")
 
-# def test_14_se_puede_filtrar_las_tareas_por_status_in_progress(tmp_path):
-# 	"""Se evalua que se obtengan correctamente las tareas en 'in-progress de la db"""
-# 	assert False
+	db.update(0, "status", "in-progress")
+	db.update(3, "status", "in-progress")
+	db.update(4, "status", "in-progress")
+	items_obtenidos = db.filter("to-do")
 
-# def test_15_modificar_un_elemento_que_no_existe_arroja_ina_excepcion(tmp_path):
-# 	"""Se evalua que se arroje una excepcion en caso de intentar modificar un elemento que no existe"""
-# 	assert False
+	assert len(items_obtenidos) == 2
+	assert items_obtenidos["1"]["description"] == "Hacer un proyecto con python"
+	assert items_obtenidos["2"]["description"] == "Ejecutar pruebas unitarias"
 
-# def test_16_filtrar_por_un_valorInvalido_arroja_excepcion(tmp_path):
-# 	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un status que no existe"""
-# 	assert False
+def test_14_se_puede_filtrar_las_tareas_por_status_in_progress(tmp_path):
+	"""Se evalua que se obtengan correctamente las tareas en 'in-progress de la db"""
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	db.add("Hacer un proyecto con python")
+	db.add("Ejecutar pruebas unitarias")
+	db.add("Hacer pruebas sobre CLI")
+	db.add("Hacer pruebas sobre DB")
 
-# def test_17_filtrar_por_un_campoInvalido_arroja_una_excepcion(tmp_path):
-# 	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un campo que no sea 'status' """
-# 	assert False
+	db.update(0, "status", "in-progress")
+	db.update(3, "status", "in-progress")
+	db.update(4, "status", "in-progress")
+	items_obtenidos = db.filter("in-progress")
+
+	assert len(items_obtenidos) == 3
+	assert items_obtenidos["0"]["description"] == "Leer 1 capitulo de Algebra Lineal"
+	assert items_obtenidos["3"]["description"] == "Hacer pruebas sobre CLI"
+	assert items_obtenidos["4"]["description"] == "Hacer pruebas sobre DB"
+
+def test_15_modificar_un_elemento_que_no_existe_arroja_ina_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar modificar un elemento que no existe"""
+	assert False
+
+def test_16_filtrar_por_un_valorInvalido_arroja_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un status que no existe"""
+	assert False
+
+def test_17_filtrar_por_un_campoInvalido_arroja_una_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un campo que no sea 'status' """
+	assert False
 
 def test_18_eliminar_un_elemento_que_no_existe_arroja_excepcion(tmp_path):
 	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
