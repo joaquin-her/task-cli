@@ -69,9 +69,10 @@ class UnknownStatusException(Exception):
 	"""Excepcion que se lanza cuando se ingresa un Status desconocido"""
 	def __init__(self, status):
 		super().__init__(f"El status '{status}' no es valido o es deconocido ")
+		self.mensaje = f"El status '{status}' no es valido o es deconocido "
 		
 class UnknownFieldException(Exception):
-	"""Excepcion que se lanza cuando se ingresa un Status desconocido"""
-	def __init__(self, status):
-		super().__init__(f"El status '{status}' no es valido o es deconocido ")
+	"""Excepcion que se lanza cuando se ingresa un campo desconocido"""
+	def __init__(self, field):
+		super().__init__(f"El campo '{field}' no es valido. ")
 		
