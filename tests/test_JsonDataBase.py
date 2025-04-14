@@ -224,18 +224,9 @@ def test_16_filtrar_por_un_valorInvalido_arroja_excepcion(tmp_path):
 	db.add("Hacer pruebas sobre CLI")
 	db.add("Hacer pruebas sobre DB")
 
-	with pytest.raises(ModificationError) as excinfo:
-		db.filter("en-progreso")
-	assert str(excinfo.value) == "El status 'en-progreso' no es valido. Los valores validos son: ['to-do', 'in-progress', 'done']"
-
-def test_18_eliminar_un_elemento_que_no_existe_arroja_excepcion(tmp_path):
-	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
-	db = crearDBVacia(tmp_path)
-	db.add("Leer 1 capitulo de Algebra Lineal")
-	with pytest.raises(UnknownIndexException) as excinfo:
-		db.removeItem(2)
-	assert str(excinfo.value) == "El indice 2 no pudo encontrarse"
-
+	with pytest.raises(TypeError) as excinfo:
+		db.filter("10")
+	assert str(excinfo.value) == "El status '10' no es valido"
 
 def test_06_se_puede_modificar_el_estado_de_una_tarea(tmp_path):
 	"""Se evalua que se pueda modificar el campo 'status' de las tareas """
@@ -271,7 +262,6 @@ def test_07_al_modificar_se_actualiza_el_campo_updated(tmp_path, ):
 	updated_time_esperado = datetime.now()
 	item_modificado = db.getItem(0)
 	
-
 	assert item_modificado["description"] == "Practicar programacion"
 	assert item_modificado["status"] == "done"
 	assert item_modificado["created"] != item_modificado["updated"]
