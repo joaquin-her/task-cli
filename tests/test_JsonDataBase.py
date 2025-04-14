@@ -49,15 +49,18 @@ def test_04_el_item_agregado_se_devuelve_correctamente(tmp_path):
 	descripcion_esperada = "Estudiar para parcial de Analisis"
 	status_esperado = "to-do"
 	created_time_esperado = datetime.now()
-	updated_time_esperado = created_time_esperado
 
 	db.add("Estudiar para parcial de Analisis")
 	item_aniadido = db.getItem(0)
 
 	assert item_aniadido["description"] == descripcion_esperada
 	assert item_aniadido["status"] == status_esperado
-	assert item_aniadido["created"] == created_time_esperado.isoformat()
-	assert item_aniadido["updated"] == updated_time_esperado.isoformat()
+	
+	tiempo_creado = datetime.fromisoformat(item_aniadido["created"])
+	
+	diferencia_segundos = abs((tiempo_creado - created_time_esperado).total_seconds())
+	assert diferencia_segundos == pytest.approx(0, abs=1)
+	assert item_aniadido["created"] == item_aniadido["updated"]
 
 def test_05_la_cantidad_de_items_incrementa_al_aniadir_elementos(tmp_path):
 	"""Se evalua que el contador de id continue creciendo"""
