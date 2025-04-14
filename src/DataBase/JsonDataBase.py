@@ -44,19 +44,33 @@ class JsonDataBase(IDataBase):
     def getItem(self, index:int)-> dict:
         """Devuelve un diccionario del objeto solicitado con ese indice """
         if self.exists(index):
-            return self.data["tasks"][str(index)]
+            return {"id":index, **self.data["tasks"][str(index)]}
 
     def getLastId(self)-> int:
         """Devuelve el valor del ultimo Id de sus tareas"""
         return self.data["items"]
     
     def getItems(self) -> dict:
-        """Devuelve el listado de objetos almacenados con sus claves como 'id'."""
+        """Devuelve el listado de objetos almacenados """
         tasks = {}
         for key, value in self.data["tasks"].items():
             task_copy = value.copy()
             task_copy["id"] = key
             tasks[key] = task_copy
+        return [
+            {"id": id, **task} for id, task in tasks.items()
+        ]
+    
+    def filter(self, filter:str) -> dict:
+        """Devuelve un listado de objetos almacenados que cumplen con el filtro"""
+        tasks = {}
+        if filter.isnumeric():
+            raise TypeError(f"El status '{filter}' no es valido")
+        for key, value in self.data["tasks"].items():
+            if value["status"] == filter:
+                task_copy = value.copy()
+                task_copy["id"] = key
+                tasks[key] = task_copy
         return tasks
 
     def getLast(self, limit):
@@ -67,7 +81,7 @@ class JsonDataBase(IDataBase):
             {"id": id, **task} for id, task in last_items
         ]
     
-    def removeItem(self, index):
+    def removeItem(self, index:int):
         """Se elimina el objeto en el indice de la Clase y de su persistencia"""
         self.exists(index)
         tasks = self.data["tasks"]
