@@ -2,30 +2,26 @@ name: Install-and-Test
 
 on:
   push:
-    branches: [ "CI" ] # Ejecutar este workflow en cada push a la rama 'main'
+    branches: [ "CI" ]
   pull_request:
-    branches: [ "main" ] # Ejecutar este workflow en cada pull request contra la rama 'main'
+    branches: [ "main" ]
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest # Ejecutar este job en un entorno Ubuntu más reciente
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Clona el repositorio al entorno de GitHub Actions
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x' # Usa la versión más reciente de Python 3
+        uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t task-cli-test-image docker/tests/ # Construye la imagen Docker para pruebas
+        run: docker build -t task-cli-test-image .
 
-      - name: Run Docker container and execute tests
-        run: docker run task-cli-test-image scripts/run_tests.sh 
+      - name: Run tests
+        run: docker run task-cli-test-image bash scripts/run_tests.sh
 
       - name: Run Coverage
         run: |
-          docker run task-cli-test-image scripts/run_coverage.sh
-          docker run task-cli-test-image coverage report 
+          docker run task-cli-test-image bash scripts/run_coverage.sh
+          docker run task-cli-test-image bash "coverage report"
+

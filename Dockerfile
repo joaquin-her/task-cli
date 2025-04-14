@@ -7,15 +7,17 @@ WORKDIR /task-cli
 # Copia los archivos de tu proyecto al contenedor
 COPY requirements.txt /task-cli/
 COPY /src /task-cli/src
+COPY /tests /task-cli/tests
+COPY /scripts /task-cli/scripts
 COPY /task_cli.py /task-cli/
 COPY cli_wrapper.sh /task-cli/
 # Instala las dependencias del proyecto
 RUN pip install -r requirements.txt
 
-
 # Crea un enlace simbólico para que 'task-cli' apunte a tu script
 RUN ln -s /task-cli/cli_wrapper.sh /usr/local/bin/task-cli
 # Hacer ejecutable el wrapper
 RUN chmod +x /task-cli/cli_wrapper.sh
+
 CMD ["/bin/sh"]
 
