@@ -22,8 +22,10 @@ class JsonDataBase(IDataBase):
 
     def createData(self, URI):
         """Crea el archivo vacio para guardar tareas si en la ruta no hay ningun elemento"""
-        # Create directories if they don't exist
-        os.makedirs(os.path.dirname(URI), exist_ok=True)
+        # Handle absolute and relative paths
+        if os.path.dirname(URI):
+            # Create directories if path contains directories
+            os.makedirs(os.path.dirname(URI), exist_ok=True)
         # Create and write the file
         with open(URI, "w") as file:
             data = {"tasks": {}, "items":0}
