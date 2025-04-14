@@ -8,7 +8,7 @@ class Task(object):
 		self.description = description
 		self.status = 'to-do'
 		self.created = datetime.now().isoformat()
-		self.updated = datetime.now().isoformat()
+		self.updated = self.created
 
 	def to_dict(self)-> dict : 
 		dict = {
