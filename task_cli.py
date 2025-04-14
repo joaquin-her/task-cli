@@ -2,7 +2,7 @@ import sys
 from src.CLI import CLI
 from src.DataBase import JsonDataBase
 
-saveFilePath = 'tasks.json'
+saveFilePath = 'data/tasks.json' 
 dataBase = JsonDataBase(saveFilePath)
 
 app = CLI(dataBase)
