@@ -210,15 +210,23 @@ def test_14_se_puede_filtrar_las_tareas_por_status_in_progress(tmp_path):
 
 def test_15_modificar_un_elemento_que_no_existe_arroja_ina_excepcion(tmp_path):
 	"""Se evalua que se arroje una excepcion en caso de intentar modificar un elemento que no existe"""
-	assert False
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	db.add("Hacer un proyecto con python")
+
+	with pytest.raises(UnknownIndexException) as excinfo:
+		db.update(2, "status", "done")
+	assert str(excinfo.value) == "El indice 2 no pudo encontrarse"
 
 def test_16_filtrar_por_un_valorInvalido_arroja_excepcion(tmp_path):
 	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un status que no existe"""
-	assert False
+	db = crearDBVacia(tmp_path)
+	db.add("Hacer pruebas sobre CLI")
+	db.add("Hacer pruebas sobre DB")
 
-def test_17_filtrar_por_un_campoInvalido_arroja_una_excepcion(tmp_path):
-	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un campo que no sea 'status' """
-	assert False
+	with pytest.raises(ModificationError) as excinfo:
+		db.filter("en-progreso")
+	assert str(excinfo.value) == "El status 'en-progreso' no es valido. Los valores validos son: ['to-do', 'in-progress', 'done']"
 
 def test_18_eliminar_un_elemento_que_no_existe_arroja_excepcion(tmp_path):
 	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
