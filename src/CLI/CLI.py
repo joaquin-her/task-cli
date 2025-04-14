@@ -49,4 +49,5 @@ class CLI(object):
     def listTasks(self, amount):
         items = self.database.getLast(int(amount))
         for item in items:
+            print(f"\n{item["id"]}:\t")
             print(Task.fromDict(item))
