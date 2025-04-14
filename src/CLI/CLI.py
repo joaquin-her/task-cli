@@ -35,7 +35,7 @@ class CLI(object):
             case 4:
                 self.executeCommand(command, args[1], args[2], args[3])
 
-    def executeCommand(self, command: str, first_arg:str='10', second_arg:str='', third_arg:str=''):
+    def executeCommand(self, command: str, first_arg:str='', second_arg:str='', third_arg:str=''):
         """ Determines and executes a command"""
         match command:
             case 'list':
@@ -63,16 +63,19 @@ class CLI(object):
         self.database.add(task_description)
         print(task_description + ": aniadida correctamente")
         
-    def handleListCommand(self, first_arg:str):
+    def handleListCommand(self, first_arg:str=''):
         """ Handles the list command """
-        if not first_arg.isnumeric():
-            self.filterTasks(first_arg)
-        elif first_arg == '':
+        if first_arg == '':
+            print("Listando todas las tareas")
             self.listAllTasks()
+        elif not first_arg.isnumeric():
+            print(f"Filtrando tareas por el argumento: '{first_arg}'")
+            self.filterTasks(first_arg)
         elif first_arg > '0':
+            print(f"Listando las {first_arg} tareas mas recientes")
             self.listLastTasks(first_arg)
         else:
-            raise ValueError("El argumento no es valido")
+            raise ValueError(f"El argumento '{first_arg}' no es valido")
 
     def listLastTasks(self, limit:str):
         """ Lists the last tasks in the database """
@@ -86,16 +89,16 @@ class CLI(object):
 
     def filterTasks(self, filter:str):
         """ Filters the tasks in the database """
-        items = self.database.getItems(filter)
+        items = self.database.filter(filter)
+        self.printTasks(items)
+
+    def printTasks(self, items:dict):
+        """ Prints the tasks in the database """
         if len(items) == 0:
             print("No se han encontrado tareas")
             return
-        self.printTasks(items)
-
-    def printTasks(self, items:List[dict]):
-        """ Prints the tasks in the database """
-        for item in items:
-            print(f"\n{item["id"]}:\t")
+        for item in items.values():
+            print(f"\n{item['id']}:\t")
             print(Task.fromDict(item))
         
     def deleteTask(self, id:str):
