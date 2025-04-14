@@ -154,9 +154,22 @@ def test_11_pedir_un_elemento_que_no_existe_arroja_una_excepcion(tmp_path):
 		db.removeItem(2)
 	assert str(excinfo.value) == "El indice 2 no pudo encontrarse"
 	
-# def test_12_se_puede_filtrar_las_tareas_por_status_done(tmp_path):
-# 	"""Se evalua que se obtengan correctamente las tareas ya completadas de la db"""
-# 	assert False
+def test_12_se_puede_filtrar_las_tareas_por_status_done(tmp_path):
+	"""Se evalua que se obtengan correctamente las tareas ya completadas de la db"""
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	db.add("Hacer un proyecto con python")
+	db.add("Ejecutar pruebas unitarias")
+	db.add("Hacer pruebas sobre CLI")
+	db.add("Hacer pruebas sobre DB")
+
+	db.update(1, "status", "done")
+	db.update(2, "status", "done")
+	items_obtenidos = db.filter("done")
+
+	assert len(items_obtenidos) == 2
+	assert items_obtenidos["1"]["description"] == "Hacer un proyecto con python"
+	assert items_obtenidos["2"]["description"] == "Ejecutar pruebas unitarias"
 
 # def test_13_se_puede_filtrar_las_tareas_por_status_to_do(tmp_path):
 # 	"""Se evalua que se obtengan correctamente las tareas en 'to-do de la db"""
@@ -178,9 +191,14 @@ def test_11_pedir_un_elemento_que_no_existe_arroja_una_excepcion(tmp_path):
 # 	"""Se evalua que se arroje una excepcion en caso de intentar filtrar por un campo que no sea 'status' """
 # 	assert False
 
-# def test_18_eliminar_un_elemento_que_no_existe_arroja_excepcion(tmp_path):
-# 	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
-# 	assert False
+def test_18_eliminar_un_elemento_que_no_existe_arroja_excepcion(tmp_path):
+	"""Se evalua que se arroje una excepcion en caso de intentar eliminar un elemento que no exista """
+	db = crearDBVacia(tmp_path)
+	db.add("Leer 1 capitulo de Algebra Lineal")
+	with pytest.raises(UnknownIndexException) as excinfo:
+		db.removeItem(2)
+	assert str(excinfo.value) == "El indice 2 no pudo encontrarse"
+
 
 def test_06_se_puede_modificar_el_estado_de_una_tarea(tmp_path):
 	"""Se evalua que se pueda modificar el campo 'status' de las tareas """
