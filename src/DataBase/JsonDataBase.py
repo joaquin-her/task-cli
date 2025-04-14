@@ -2,9 +2,10 @@ from .IDataBase import IDataBase
 from ..Task import Task, UnknownFieldException, UnknownStatusException
 from .DataBaseExceptions import UnknownIndexException, ModificationError
 import json
+import os
 
 class JsonDataBase(IDataBase):
-    """ Docstring for JsonDataBase"""
+    """ Docstring for JsonDataBase. The URI should be a json file path """
     def __init__(self, URI:str):
         self.URI = URI
         try:
@@ -21,9 +22,12 @@ class JsonDataBase(IDataBase):
 
     def createData(self, URI):
         """Crea el archivo vacio para guardar tareas si en la ruta no hay ningun elemento"""
+        # Create directories if they don't exist
+        os.makedirs(os.path.dirname(URI), exist_ok=True)
+        # Create and write the file
         with open(URI, "w") as file:
             data = {"tasks": {}, "items":0}
-            json.dump(data, file )
+            json.dump(data, file)
         return data
 
     def saveData(self):
@@ -57,9 +61,7 @@ class JsonDataBase(IDataBase):
             task_copy = value.copy()
             task_copy["id"] = key
             tasks[key] = task_copy
-        return [
-            {"id": id, **task} for id, task in tasks.items()
-        ]
+        return tasks
     
     def filter(self, filter:str) -> dict:
         """Devuelve un listado de objetos almacenados que cumplen con el filtro"""
@@ -72,14 +74,12 @@ class JsonDataBase(IDataBase):
                 task_copy["id"] = key
                 tasks[key] = task_copy
         return tasks
-
-    def getLast(self, limit):
+    
+    def getLast(self, limit)-> dict:
         """Devuelve los últimos 'limit' elementos de la base de datos con sus claves como 'id'."""
-        items = list(self.data["tasks"].items())
-        last_items = items[-limit:] if len(items) >= limit else items
-        return [
-            {"id": id, **task} for id, task in last_items
-        ]
+        items = self.getItems()
+        items = dict(list(items.items())[-limit:])
+        return items
     
     def removeItem(self, index:int):
         """Se elimina el objeto en el indice de la Clase y de su persistencia"""

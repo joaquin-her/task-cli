@@ -20,3 +20,7 @@ class IDataBase(ABC):
         """Modifica el campo de la tarea."""
         pass
 
+    @abstractmethod
+    def filter(self, filter:str) -> dict:
+        """Devuelve una lista de tareas que cumplen con el filtro."""
+        pass
