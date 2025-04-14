@@ -18,10 +18,10 @@ jobs:
         run: docker build -t task-cli-test-image .
 
       - name: Run tests
-        run: docker run task-cli-test-image bash scripts/run_tests.sh
+        run: docker run task-cli-test-image sh scripts/run_tests.sh
 
       - name: Run Coverage
         run: |
-          docker run task-cli-test-image bash scripts/run_coverage.sh
-          docker run task-cli-test-image bash "coverage report"
+          docker run task-cli-test-image sh scripts/run_coverage.sh
+          docker run task-cli-test-image sh "coverage report"
 
