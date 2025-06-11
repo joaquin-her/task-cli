@@ -1,10 +1,11 @@
 from .IDataBase import IDataBase
-from ..Task import Task
-from .DataBaseExceptions import UnknownIndexException
+from ..Task import Task, UnknownFieldException, UnknownStatusException
+from .DataBaseExceptions import UnknownIndexException, ModificationError
 import json
+import os
 
 class JsonDataBase(IDataBase):
-    """ Docstring for JsonDataBase"""
+    """ Docstring for JsonDataBase. The URI should be a json file path """
     def __init__(self, URI:str):
         self.URI = URI
         try:
@@ -21,10 +22,14 @@ class JsonDataBase(IDataBase):
 
     def createData(self, URI):
         """Crea el archivo vacio para guardar tareas si en la ruta no hay ningun elemento"""
-
+        # Handle absolute and relative paths
+        if os.path.dirname(URI):
+            # Create directories if path contains directories
+            os.makedirs(os.path.dirname(URI), exist_ok=True)
+        # Create and write the file
         with open(URI, "w") as file:
             data = {"tasks": {}, "items":0}
-            json.dump(data, file )
+            json.dump(data, file)
         return data
 
     def saveData(self):
@@ -45,25 +50,40 @@ class JsonDataBase(IDataBase):
     def getItem(self, index:int)-> dict:
         """Devuelve un diccionario del objeto solicitado con ese indice """
         if self.exists(index):
-            return self.data["tasks"][str(index)]
+            return {"id":index, **self.data["tasks"][str(index)]}
 
     def getLastId(self)-> int:
         """Devuelve el valor del ultimo Id de sus tareas"""
         return self.data["items"]
     
-    def getItems(self)-> dict:
-        """Devuelve el listado de objetos almacenados"""
-        return self.data["tasks"]
-
-    def getLast(self, limit):
-        """Devuelve los ultimos 'limit' elementos de la base de datos"""
-        tasks = self.data["tasks"]
-        if len(tasks) >= limit:
-            return tasks[-limit:]  
-        else:
-            return tasks  
+    def getItems(self) -> dict:
+        """Devuelve el listado de objetos almacenados """
+        tasks = {}
+        for key, value in self.data["tasks"].items():
+            task_copy = value.copy()
+            task_copy["id"] = key
+            tasks[key] = task_copy
+        return tasks
     
-    def removeItem(self, index):
+    def filter(self, filter:str) -> dict:
+        """Devuelve un listado de objetos almacenados que cumplen con el filtro"""
+        tasks = {}
+        if filter.isnumeric():
+            raise TypeError(f"El status '{filter}' no es valido")
+        for key, value in self.data["tasks"].items():
+            if value["status"] == filter:
+                task_copy = value.copy()
+                task_copy["id"] = key
+                tasks[key] = task_copy
+        return tasks
+    
+    def getLast(self, limit)-> dict:
+        """Devuelve los últimos 'limit' elementos de la base de datos con sus claves como 'id'."""
+        items = self.getItems()
+        items = dict(list(items.items())[-limit:])
+        return items
+    
+    def removeItem(self, index:int):
         """Se elimina el objeto en el indice de la Clase y de su persistencia"""
         self.exists(index)
         tasks = self.data["tasks"]
@@ -71,14 +91,18 @@ class JsonDataBase(IDataBase):
         self.saveData()
         return
 
-    def updateStatus(self, index:int, status:str):
+    def update(self, index:int, field:str, value:str):
         """Se convierte el indice del diccionario a Objeto, se modifica, y se guarda su modificado"""
         if (self.exists(index)):
             requestedTask = self.getItem(index)
             updatedTask = Task.fromDict(requestedTask)
-            updatedTask.setStatus(status)
-            self.saveTask(index, updatedTask)
-            self.saveData()
+            try:
+                updatedTask.update(field, value)
+                self.saveTask(index, updatedTask)
+                self.saveData()
+            except (UnknownStatusException, UnknownFieldException, TypeError) :
+                raise ModificationError
+
 
     def saveTask(self, index:int, task:Task):
         self.data["tasks"][str(index)] = task.to_dict()

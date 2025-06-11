@@ -1,0 +1,26 @@
+name: Install-and-Test
+
+on:
+  push:
+    branches: [ "CI" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t task-cli-test-image .
+
+      - name: Run tests
+        run: docker run task-cli-test-image sh scripts/run_tests.sh
+
+      - name: Run Coverage
+        run: |
+          docker run task-cli-test-image sh scripts/run_coverage.sh
+

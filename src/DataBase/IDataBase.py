@@ -16,6 +16,11 @@ class IDataBase(ABC):
         pass
 
     @abstractmethod
-    def updateStatus(self, index:int, task_description: str):
-        """Modifica el status de la tarea."""
+    def update(self, index:int, field:str, value: str):
+        """Modifica el campo de la tarea."""
+        pass
+
+    @abstractmethod
+    def filter(self, filter:str) -> dict:
+        """Devuelve una lista de tareas que cumplen con el filtro."""
         pass

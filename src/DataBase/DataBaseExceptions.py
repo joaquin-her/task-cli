@@ -17,3 +17,8 @@ class UnknownIndexException(Exception):
         self.mensaje = mensaje
         pass
 
+
+class ModificationError(Exception):
+    """Excepcion que se lanza al modificar un elemento de manera incorrecta """
+    def __init__(self):
+        super().__init__(f"El ojeto a modificar tuvo un error al modificarse")
